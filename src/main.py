@@ -1,10 +1,28 @@
+import re
 import tkinter as tk
 from tkinter import OptionMenu, StringVar, filedialog
 import os
 import webbrowser
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 history = []
+MATH_FUNCS = {
+    "sin": np.sin,
+    "cos": np.cos,
+    "tan": np.tan,
+    "log": np.log,
+    "sqrt": np.sqrt,
+    "exp": np.exp,
+    "abs": np.abs,
+}
+
+CONSTANTS = {
+    "pi": np.pi,
+    "e": np.e,
+}
 
 
 def writeHistory():
@@ -21,12 +39,57 @@ def writeHistory():
     )
 
     if not path:
-        path = os.path.join(os.path.dirname(__file__), "hist.txt")
+        path = os.path.abspath(os.path.join(os.path.dirname(__file__), "hist.txt"))
 
     with open(path, "w") as f:
         for item in history:
             f.write(item + "\n")
     webbrowser.open(path)
+
+
+def plotGraph():
+    exp = entry.get()
+    exp = exp.replace("^", "**")
+    for fn in MATH_FUNCS:
+        exp = re.sub(rf"\b{fn}\(", f"np.{fn}(", exp)
+    for c in CONSTANTS:
+        exp = re.sub(rf"\b{c}\(", f"np.{c}(", exp)
+
+    if not exp:
+        return
+
+    expList = [e.strip() for e in exp.split(",")]
+
+    x = np.linspace(-10, 10, 500)
+
+    fig, axes = plt.subplots()
+
+    for e in expList:
+        try:
+            y = eval(
+                e,
+                {"__builtins__": {}},
+                {
+                    "x": x,
+                    "np": np,
+                },
+            )
+            axes.plot(x, y, label=e)
+        except:
+            entry.delete(0, tk.END)
+            entry.insert(0, f"Error in: {e}")
+            return
+
+    axes.set_title(f"y = {exp}")
+    axes.grid()
+
+    for w in root.grid_slaves():
+        if int(w.grid_info()["row"]) >= 3:
+            w.destroy()
+
+    can = FigureCanvasTkAgg(fig, master=root)
+    can.draw()
+    can.get_tk_widget().grid(row=3, column=0, columnspan=4)
 
 
 def destroyButtons():
@@ -57,8 +120,12 @@ def createButtons():
 
 
 def changeMode(calc_type):
+    destroyButtons()
     if calc_type == "Graph":
-        destroyButtons()
+        btn = tk.Button(root, text="Plot", width=20, height=2, command=plotGraph)
+        btn.grid(row=2, column=0, columnspan=4, pady=10)
+        buttonList.append(btn)
+
     else:
         createButtons()
 
@@ -128,7 +195,9 @@ OptionMenu(root, calc_type, *["Calc", "Graph"], command=changeMode).grid(
 entry = tk.Entry(width=20, font=("Arial", 20), borderwidth=5)
 entry.grid(row=1, column=0, columnspan=4, pady=10)
 entry.focus_force()
-entry.bind("<Return>", lambda event: equal())
+entry.bind(
+    "<Return>", lambda event: equal() if calc_type.get() == "Calc" else plotGraph()
+)
 
 
 buttons = [
