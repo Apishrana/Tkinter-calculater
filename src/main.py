@@ -11,15 +11,19 @@ def writeHistory():
     if not history:
         return
 
+    defaultDir = os.path.join(os.path.expanduser("~"), "Downloads")
+    defaultFile = "calculator_history.txt"
     # path = os.path.join(os.path.dirname(__file__), "hist.txt")
     path = filedialog.asksaveasfilename(
-        defaultextension=".txt", filetypes=[("Text files", "*.txt")]
+        initialdir=defaultDir,
+        initialfile=defaultFile,
+        defaultextension=".txt",
+        filetypes=[("Text files", "*.txt")],
     )
 
     with open(path, "w") as f:
         for item in history:
             f.write(item + "\n")
-
     webbrowser.open(path)
 
 
