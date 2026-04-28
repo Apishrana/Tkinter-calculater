@@ -83,6 +83,7 @@ root.resizable(width=False, height=False)
 entry = tk.Entry(width=20, font=("Arial", 20), borderwidth=5)
 entry.grid(row=0, column=0, columnspan=4)
 entry.focus_force()
+entry.bind("<Return>", lambda event: equal())
 
 
 buttons = [
