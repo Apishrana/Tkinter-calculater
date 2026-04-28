@@ -237,7 +237,7 @@ menu.add_cascade(label="Help", menu=helpMenu)
 helpMenu.add_command(
     label="About",
     command=lambda: webbrowser.open_new(
-        "https://github.com/Apishrana/Tkinter-calculater"
+        "https://github.com/Apishrana/Tkinter-calculater/blob/main/README.md"
     ),
 )
 
