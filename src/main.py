@@ -241,5 +241,4 @@ helpMenu.add_command(
     ),
 )
 
-
 root.mainloop()
