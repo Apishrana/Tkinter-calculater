@@ -235,6 +235,7 @@ buttons = [
         # "fn": print("="),
     },
 ]
+buttonList = []
 
 for i in buttons:
     btn = tk.Button(
@@ -253,6 +254,7 @@ for i in buttons:
         padx=1,
         pady=1,
     )
+    buttonList.append(btn)
 
 
 menu = tk.Menu(root)
