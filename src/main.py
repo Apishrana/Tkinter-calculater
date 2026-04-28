@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import filedialog
 import os
 import webbrowser
 
@@ -10,7 +11,10 @@ def writeHistory():
     if not history:
         return
 
-    path = os.path.join(os.path.dirname(__file__), "hist.txt")
+    # path = os.path.join(os.path.dirname(__file__), "hist.txt")
+    path = filedialog.asksaveasfilename(
+        defaultextension=".txt", filetypes=[("Text files", "*.txt")]
+    )
 
     with open(path, "w") as f:
         for item in history:
