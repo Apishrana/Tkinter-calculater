@@ -13,7 +13,6 @@ def writeHistory():
 
     defaultDir = os.path.join(os.path.expanduser("~"), "Downloads")
     defaultFile = "calculator_history.txt"
-    # path = os.path.join(os.path.dirname(__file__), "hist.txt")
     path = filedialog.asksaveasfilename(
         initialdir=defaultDir,
         initialfile=defaultFile,
@@ -21,14 +20,52 @@ def writeHistory():
         filetypes=[("Text files", "*.txt")],
     )
 
+    if not path:
+        path = os.path.join(os.path.dirname(__file__), "hist.txt")
+
     with open(path, "w") as f:
         for item in history:
             f.write(item + "\n")
     webbrowser.open(path)
 
 
+def destroyButtons():
+    for i in buttonList:
+        i.destroy()
+    buttonList.clear()
+
+
+def createButtons():
+    for i in buttons:
+        btn = tk.Button(
+            text=i["text"],
+            width=5 * (i["colSpan"]) + 5 * (i["colSpan"] - 1),
+            height=2 * (i["rowSpan"]) + 5 * (i["rowSpan"] - 1),
+            command=lambda val=i["text"]: click(val),
+        )
+        btn.grid(
+            row=i["row"],
+            column=i["col"],
+            columnspan=i["colSpan"],
+            rowspan=i["rowSpan"],
+            ipadx=5,
+            ipady=5,
+            padx=1,
+            pady=1,
+        )
+        buttonList.append(btn)
+
+
+def changeMode(calc_type):
+    if calc_type == "Graph":
+        destroyButtons()
+    else:
+        createButtons()
+
+
 def clear():
-    entry.delete(first=len(entry.get()) - 1, last=tk.END)
+    if entry.get():
+        entry.delete(first=len(entry.get()) - 1, last=tk.END)
 
 
 def clearAll():
@@ -46,12 +83,15 @@ def equal():
         try:
             if float(v) >= 10**100:
                 v = "Math error"
+            else:
+                history[-1] += v
         except:
+            history.pop()
             v = "Math error"
     except Exception as e:
         print(e)
+        history.pop()
         v = "Syntax error"
-    history[-1] += v
     entry.insert(string=v, index=tk.END)
 
 
@@ -81,7 +121,9 @@ root.resizable(width=False, height=False)
 
 
 calc_type = StringVar(value="Calc")
-OptionMenu(root, calc_type, *["Calc", "Graph"]).grid(row=0, column=3, pady=10)
+OptionMenu(root, calc_type, *["Calc", "Graph"], command=changeMode).grid(
+    row=0, column=3, pady=10
+)
 
 entry = tk.Entry(width=20, font=("Arial", 20), borderwidth=5)
 entry.grid(row=1, column=0, columnspan=4, pady=10)
@@ -237,25 +279,7 @@ buttons = [
 ]
 buttonList = []
 
-for i in buttons:
-    btn = tk.Button(
-        text=i["text"],
-        width=5 * (i["colSpan"]) + 5 * (i["colSpan"] - 1),
-        height=2 * (i["rowSpan"]) + 5 * (i["rowSpan"] - 1),
-        command=lambda val=i["text"]: click(val),
-    )
-    btn.grid(
-        row=i["row"],
-        column=i["col"],
-        columnspan=i["colSpan"],
-        rowspan=i["rowSpan"],
-        ipadx=5,
-        ipady=5,
-        padx=1,
-        pady=1,
-    )
-    buttonList.append(btn)
-
+createButtons()
 
 menu = tk.Menu(root)
 root.config(menu=menu)
@@ -274,5 +298,6 @@ helpMenu.add_command(
         "https://github.com/Apishrana/Tkinter-calculater/blob/main/README.md"
     ),
 )
+
 
 root.mainloop()
