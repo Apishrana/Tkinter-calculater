@@ -3,6 +3,20 @@ import os
 import webbrowser
 
 
+history = []
+
+
+def writeHistory():
+    if not history:
+        return
+
+    path = os.path.join(os.path.dirname(__file__), "hist.txt")
+
+    with open(path, "w") as f:
+        for item in history:
+            f.write(item + "\n")
+
+
 def clear():
     entry.delete(first=len(entry.get()) - 1, last=tk.END)
 
@@ -13,6 +27,8 @@ def clearAll():
 
 def equal():
     v = entry.get()
+    history.append(v)
+    history[-1] += " = "
     entry.delete(first=0, last=tk.END)
     try:
         v = eval(v)
@@ -25,6 +41,7 @@ def equal():
             v = "Math error"
     except:
         v = "Syntax error"
+    history[-1] += v
     entry.insert(string=v, index=tk.END)
 
 
@@ -228,7 +245,7 @@ root.config(menu=menu)
 fileMenu = tk.Menu(menu)
 menu.add_cascade(label="File", menu=fileMenu)
 fileMenu.add_command(label="Clear", command=clearAll)
-fileMenu.add_command(label="Save History")
+fileMenu.add_command(label="Save History", command=writeHistory)
 fileMenu.add_separator()
 fileMenu.add_command(label="Exit", command=root.destroy)
 
