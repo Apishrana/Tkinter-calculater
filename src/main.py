@@ -1,5 +1,6 @@
 import tkinter as tk
 import os
+import webbrowser
 
 
 def clear():
@@ -233,6 +234,12 @@ fileMenu.add_command(label="Exit", command=root.destroy)
 
 helpMenu = tk.Menu(menu)
 menu.add_cascade(label="Help", menu=helpMenu)
-helpMenu.add_command(label="About")
+helpMenu.add_command(
+    label="About",
+    command=lambda: webbrowser.open_new(
+        "https://github.com/Apishrana/Tkinter-calculater"
+    ),
+)
+
 
 root.mainloop()
