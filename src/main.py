@@ -16,6 +16,8 @@ def writeHistory():
         for item in history:
             f.write(item + "\n")
 
+    webbrowser.open(path)
+
 
 def clear():
     entry.delete(first=len(entry.get()) - 1, last=tk.END)
@@ -33,13 +35,13 @@ def equal():
     try:
         v = eval(v)
         v = str(v)
-        if int(v) >= 10**100:
-            v = "Math error"
         try:
-            float(v)
+            if float(v) >= 10**100:
+                v = "Math error"
         except:
             v = "Math error"
-    except:
+    except Exception as e:
+        print(e)
         v = "Syntax error"
     history[-1] += v
     entry.insert(string=v, index=tk.END)
