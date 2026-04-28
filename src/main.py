@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import OptionMenu, StringVar, filedialog
 import os
 import webbrowser
 
@@ -80,15 +80,18 @@ root.iconphoto(False, tk.PhotoImage(file=icon_path))
 root.resizable(width=False, height=False)
 
 
+calc_type = StringVar(value="Calc")
+OptionMenu(root, calc_type, *["Calc", "Graph"]).grid(row=0, column=3, pady=10)
+
 entry = tk.Entry(width=20, font=("Arial", 20), borderwidth=5)
-entry.grid(row=0, column=0, columnspan=4)
+entry.grid(row=1, column=0, columnspan=4, pady=10)
 entry.focus_force()
 entry.bind("<Return>", lambda event: equal())
 
 
 buttons = [
     {
-        "row": 1,
+        "row": 2,
         "col": 0,
         "rowSpan": 1,
         "colSpan": 2,
@@ -96,7 +99,7 @@ buttons = [
         # "fn": print("del"),
     },
     {
-        "row": 1,
+        "row": 2,
         "col": 2,
         "rowSpan": 1,
         "colSpan": 1,
@@ -104,7 +107,7 @@ buttons = [
         # "fn": print("clear"),
     },
     {
-        "row": 1,
+        "row": 2,
         "col": 3,
         "rowSpan": 1,
         "colSpan": 1,
@@ -112,7 +115,7 @@ buttons = [
         # "fn": print("/"),
     },
     {
-        "row": 2,
+        "row": 3,
         "col": 0,
         "rowSpan": 1,
         "colSpan": 1,
@@ -120,7 +123,7 @@ buttons = [
         # "fn": print("7"),
     },
     {
-        "row": 2,
+        "row": 3,
         "col": 1,
         "rowSpan": 1,
         "colSpan": 1,
@@ -128,7 +131,7 @@ buttons = [
         # "fn": print("8"),
     },
     {
-        "row": 2,
+        "row": 3,
         "col": 2,
         "rowSpan": 1,
         "colSpan": 1,
@@ -136,7 +139,7 @@ buttons = [
         # "fn": print("9"),
     },
     {
-        "row": 2,
+        "row": 3,
         "col": 3,
         "rowSpan": 1,
         "colSpan": 1,
@@ -144,7 +147,7 @@ buttons = [
         # "fn": print("*"),
     },
     {
-        "row": 3,
+        "row": 4,
         "col": 0,
         "rowSpan": 1,
         "colSpan": 1,
@@ -152,7 +155,7 @@ buttons = [
         # "fn": print("4"),
     },
     {
-        "row": 3,
+        "row": 4,
         "col": 1,
         "rowSpan": 1,
         "colSpan": 1,
@@ -160,7 +163,7 @@ buttons = [
         # "fn": print("5"),
     },
     {
-        "row": 3,
+        "row": 4,
         "col": 2,
         "rowSpan": 1,
         "colSpan": 1,
@@ -168,7 +171,7 @@ buttons = [
         # "fn": print("6"),
     },
     {
-        "row": 3,
+        "row": 4,
         "col": 3,
         "rowSpan": 1,
         "colSpan": 1,
@@ -176,7 +179,7 @@ buttons = [
         # "fn": print("-"),
     },
     {
-        "row": 4,
+        "row": 5,
         "col": 0,
         "rowSpan": 1,
         "colSpan": 1,
@@ -184,7 +187,7 @@ buttons = [
         # "fn": print("1"),
     },
     {
-        "row": 4,
+        "row": 5,
         "col": 1,
         "rowSpan": 1,
         "colSpan": 1,
@@ -192,7 +195,7 @@ buttons = [
         # "fn": print("2"),
     },
     {
-        "row": 4,
+        "row": 5,
         "col": 2,
         "rowSpan": 1,
         "colSpan": 1,
@@ -200,7 +203,7 @@ buttons = [
         # "fn": print("3"),
     },
     {
-        "row": 4,
+        "row": 5,
         "col": 3,
         "rowSpan": 1,
         "colSpan": 1,
@@ -208,7 +211,7 @@ buttons = [
         # "fn": print("+"),
     },
     {
-        "row": 5,
+        "row": 6,
         "col": 0,
         "rowSpan": 1,
         "colSpan": 2,
@@ -216,7 +219,7 @@ buttons = [
         # "fn": print("0"),
     },
     {
-        "row": 5,
+        "row": 6,
         "col": 2,
         "rowSpan": 1,
         "colSpan": 1,
@@ -224,7 +227,7 @@ buttons = [
         # "fn": print("."),
     },
     {
-        "row": 5,
+        "row": 6,
         "col": 3,
         "rowSpan": 1,
         "colSpan": 1,
@@ -234,12 +237,13 @@ buttons = [
 ]
 
 for i in buttons:
-    tk.Button(
+    btn = tk.Button(
         text=i["text"],
         width=5 * (i["colSpan"]) + 5 * (i["colSpan"] - 1),
         height=2 * (i["rowSpan"]) + 5 * (i["rowSpan"] - 1),
         command=lambda val=i["text"]: click(val),
-    ).grid(
+    )
+    btn.grid(
         row=i["row"],
         column=i["col"],
         columnspan=i["colSpan"],
