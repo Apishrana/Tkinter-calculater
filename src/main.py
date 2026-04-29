@@ -44,7 +44,6 @@ def writeHistory():
     with open(path, "w") as f:
         for item in history:
             f.write(item + "\n")
-    webbrowser.open(path)
 
 
 def plotGraph():
@@ -80,7 +79,15 @@ def plotGraph():
             entry.insert(0, f"Error in: {e}")
             return
 
-    axes.set_title(f"y = {exp}")
+    ttl = ""
+
+    for i in expList:
+        if ttl == "":
+            ttl += f"y = {i}"
+        else:
+            ttl += f" , y = {i}"
+
+    axes.set_title(ttl)
     axes.grid()
 
     for w in root.grid_slaves():
@@ -93,9 +100,9 @@ def plotGraph():
 
 
 def destroyButtons():
-    for i in buttonList:
-        i.destroy()
-    buttonList.clear()
+    for w in root.grid_slaves():
+        if int(w.grid_info()["row"]) >= 2:
+            w.destroy()
 
 
 def createButtons():
@@ -116,7 +123,6 @@ def createButtons():
             padx=1,
             pady=1,
         )
-        buttonList.append(btn)
 
 
 def changeMode(calc_type):
@@ -124,8 +130,6 @@ def changeMode(calc_type):
     if calc_type == "Graph":
         btn = tk.Button(root, text="Plot", width=20, height=2, command=plotGraph)
         btn.grid(row=2, column=0, columnspan=4, pady=10)
-        buttonList.append(btn)
-
     else:
         createButtons()
 
@@ -346,7 +350,6 @@ buttons = [
         # "fn": print("="),
     },
 ]
-buttonList = []
 
 createButtons()
 
