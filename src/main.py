@@ -106,6 +106,8 @@ def plotGraph():
     axes.set_xlim(-10, 10)
     axes.set_ylim(-10, 10)
 
+    fig.canvas.mpl_connect("scroll_event", onScroll)
+
     currentFig = fig
 
     for w in root.grid_slaves():
@@ -122,6 +124,37 @@ def plotGraph():
     tool = NavigationToolbar2Tk(can, graphFrame)
     tool.update()
     tool.pack()
+
+
+def onScroll(event):
+    axes = event.inaxes
+    if axes is None:
+        return
+
+    baseS = 1.2
+
+    if event.button == "up":
+        scale = 1 / baseS
+    elif event.button == "down":
+        scale = baseS
+    else:
+        return
+
+    curXLim = axes.get_xlim()
+    curYLim = axes.get_ylim()
+
+    Xdata = event.xdata
+    Ydata = event.ydata
+
+    newWidth = (curXLim[1] - curXLim[0]) * scale
+    newHeight = (curYLim[1] - curYLim[0]) * scale
+
+    relX = (curXLim[1] - Xdata) / (curXLim[1] - curXLim[0])
+    relY = (curYLim[1] - Ydata) / (curYLim[1] - curYLim[0])
+
+    axes.set_xlim([Xdata - newWidth * (1 - relX), Xdata + newWidth * relX])
+    axes.set_ylim([Ydata - newHeight * (1 - relY), Ydata + newHeight * relY])
+    axes.figure.canvas.draw_idle()
 
 
 def saveGraph(f):
