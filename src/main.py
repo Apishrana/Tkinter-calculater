@@ -213,6 +213,7 @@ def changeMode(calc_type):
         ).grid(row=2, column=2, columnspan=2, pady=5)
     else:
         createButtons()
+        root.iconphoto(False, tk.PhotoImage(file=icon_path))
 
 
 def clear():
