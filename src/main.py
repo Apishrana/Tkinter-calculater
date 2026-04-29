@@ -267,7 +267,7 @@ def click(val):
 
 root = tk.Tk()
 root.title("Calculator")
-icon_path = os.path.join(os.path.dirname(__file__), "..", "assets", "calculator.png")
+icon_path = os.path.join(os.path.dirname(__file__), "calculator.png")
 root.iconphoto(False, tk.PhotoImage(file=icon_path))
 root.resizable(width=False, height=False)
 
