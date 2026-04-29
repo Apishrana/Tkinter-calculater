@@ -90,7 +90,21 @@ def plotGraph():
 
     axes.set_title(ttl)
     axes.grid()
+    axes.spines["left"].set_position("zero")
+    axes.spines["bottom"].set_position("zero")
+
+    axes.spines["right"].set_color("none")
+    axes.spines["top"].set_color("none")
+
+    axes.xaxis.set_ticks_position("bottom")
+    axes.yaxis.set_ticks_position("left")
+
+    axes.spines["left"].set_linewidth(1.5)
+    axes.spines["bottom"].set_linewidth(1.5)
+
     axes.set_aspect("equal", adjustable="datalim")
+    axes.set_xlim(-10, 10)
+    axes.set_ylim(-10, 10)
 
     currentFig = fig
 
