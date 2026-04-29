@@ -24,20 +24,19 @@ CONSTANTS = {
     "e": np.e,
 }
 
+currentFig = None
+
 
 def writeHistory():
     if not history:
         return
-
     defaultDir = os.path.join(os.path.expanduser("~"), "Downloads")
-    defaultFile = "calculator_history.txt"
     path = filedialog.asksaveasfilename(
         initialdir=defaultDir,
-        initialfile=defaultFile,
+        initialfile="calculator_history.txt",
         defaultextension=".txt",
         filetypes=[("Text files", "*.txt")],
     )
-
     if not path:
         path = os.path.abspath(os.path.join(os.path.dirname(__file__), "hist.txt"))
 
@@ -47,6 +46,7 @@ def writeHistory():
 
 
 def plotGraph():
+    global currentFig
     exp = entry.get()
     exp = exp.replace("^", "**")
     for fn in MATH_FUNCS:
@@ -90,6 +90,8 @@ def plotGraph():
     axes.set_title(ttl)
     axes.grid()
 
+    currentFig = fig
+
     for w in root.grid_slaves():
         if int(w.grid_info()["row"]) >= 3:
             w.destroy()
@@ -97,6 +99,20 @@ def plotGraph():
     can = FigureCanvasTkAgg(fig, master=root)
     can.draw()
     can.get_tk_widget().grid(row=3, column=0, columnspan=4)
+
+
+def saveGraph(f):
+    defaultDir = os.path.join(os.path.expanduser("~"), "Downloads")
+    path = filedialog.asksaveasfilename(
+        initialdir=defaultDir,
+        initialfile="graph.png",
+        defaultextension=".png",
+        filetypes=[("PNG files", "*.png")],
+    )
+
+    if not path:
+        return
+    f.savefig(path)
 
 
 def destroyButtons():
@@ -128,8 +144,16 @@ def createButtons():
 def changeMode(calc_type):
     destroyButtons()
     if calc_type == "Graph":
-        btn = tk.Button(root, text="Plot", width=20, height=2, command=plotGraph)
-        btn.grid(row=2, column=0, columnspan=4, pady=10)
+        tk.Button(root, text="Plot Graph", width=20, height=2, command=plotGraph).grid(
+            row=2, column=0, columnspan=2, pady=5
+        )
+        tk.Button(
+            root,
+            text="Save PNG",
+            width=20,
+            height=2,
+            command=lambda: saveGraph(currentFig),
+        ).grid(row=2, column=2, columnspan=2, pady=5)
     else:
         createButtons()
 
@@ -359,6 +383,7 @@ fileMenu = tk.Menu(menu)
 menu.add_cascade(label="File", menu=fileMenu)
 fileMenu.add_command(label="Clear", command=clearAll)
 fileMenu.add_command(label="Save History", command=writeHistory)
+fileMenu.add_command(label="Save Graph", command=lambda: saveGraph(currentFig))
 fileMenu.add_separator()
 fileMenu.add_command(label="Exit", command=root.destroy)
 
