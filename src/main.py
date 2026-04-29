@@ -89,6 +89,7 @@ def plotGraph():
 
     axes.set_title(ttl)
     axes.grid()
+    axes.set_aspect("equal", adjustable="datalim")
 
     currentFig = fig
 
