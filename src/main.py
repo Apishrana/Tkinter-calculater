@@ -48,6 +48,9 @@ def writeHistory():
 
 def plotGraph():
     global currentFig
+
+    plt.close("all")
+
     exp = entry.get()
     exp = exp.replace("^", "**")
     for fn in MATH_FUNCS:
@@ -124,6 +127,8 @@ def plotGraph():
     tool = NavigationToolbar2Tk(can, graphFrame)
     tool.update()
     tool.pack()
+
+    tool.pan()
 
 
 def onScroll(event):
