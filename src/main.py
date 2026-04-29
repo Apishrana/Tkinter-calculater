@@ -6,6 +6,7 @@ import webbrowser
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 
 
 history = []
@@ -52,7 +53,7 @@ def plotGraph():
     for fn in MATH_FUNCS:
         exp = re.sub(rf"\b{fn}\(", f"np.{fn}(", exp)
     for c in CONSTANTS:
-        exp = re.sub(rf"\b{c}\(", f"np.{c}(", exp)
+        exp = re.sub(rf"\b{c}", f"np.{c}", exp)
 
     if not exp:
         return
@@ -67,7 +68,7 @@ def plotGraph():
         try:
             y = eval(
                 e,
-                {"__builtins__": {}},
+                {"__builtins__": None},
                 {
                     "x": x,
                     "np": np,
@@ -97,9 +98,16 @@ def plotGraph():
         if int(w.grid_info()["row"]) >= 3:
             w.destroy()
 
-    can = FigureCanvasTkAgg(fig, master=root)
+    graphFrame = tk.Frame(root)
+    graphFrame.grid(row=3, column=0, columnspan=4)
+
+    can = FigureCanvasTkAgg(fig, master=graphFrame)
     can.draw()
-    can.get_tk_widget().grid(row=3, column=0, columnspan=4)
+    can.get_tk_widget().pack()
+
+    tool = NavigationToolbar2Tk(can, graphFrame)
+    tool.update()
+    tool.pack()
 
 
 def saveGraph(f):
