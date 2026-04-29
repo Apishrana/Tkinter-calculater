@@ -63,7 +63,7 @@ def plotGraph():
 
     expList = [e.strip() for e in exp.split(",")]
 
-    x = np.linspace(-10, 10, 500)
+    x = np.linspace(-100, 100, 5000)
 
     fig, axes = plt.subplots()
 
@@ -85,6 +85,8 @@ def plotGraph():
 
     ttl = ""
 
+    axes.margins(0.1)
+
     for i in expList:
         if ttl == "":
             ttl += f"y = {i}"
@@ -92,18 +94,14 @@ def plotGraph():
             ttl += f" , y = {i}"
 
     axes.set_title(ttl)
-    axes.grid()
+    axes.grid(True, which="both", linestyle="--", linewidth=0.5, alpha=0.6)
     axes.spines["left"].set_position("zero")
     axes.spines["bottom"].set_position("zero")
-
     axes.spines["right"].set_color("none")
     axes.spines["top"].set_color("none")
 
     axes.xaxis.set_ticks_position("bottom")
     axes.yaxis.set_ticks_position("left")
-
-    axes.spines["left"].set_linewidth(1.5)
-    axes.spines["bottom"].set_linewidth(1.5)
 
     axes.set_aspect("equal", adjustable="datalim")
     axes.set_xlim(-10, 10)
@@ -132,34 +130,32 @@ def plotGraph():
 
 
 def onScroll(event):
-    axes = event.inaxes
-    if axes is None:
+    ax = event.inaxes
+    if ax is None:
+        return
+    base = 1.2
+    scale = (
+        1 / base if event.button == "up" else base if event.button == "down" else None
+    )
+    if scale is None:
         return
 
-    baseS = 1.2
+    cur_xlim = ax.get_xlim()
+    cur_ylim = ax.get_ylim()
 
-    if event.button == "up":
-        scale = 1 / baseS
-    elif event.button == "down":
-        scale = baseS
-    else:
-        return
+    xdata, ydata = event.xdata, event.ydata
 
-    curXLim = axes.get_xlim()
-    curYLim = axes.get_ylim()
+    new_w = (cur_xlim[1] - cur_xlim[0]) * scale
+    new_h = (cur_ylim[1] - cur_ylim[0]) * scale
 
-    Xdata = event.xdata
-    Ydata = event.ydata
+    relx = (cur_xlim[1] - xdata) / (cur_xlim[1] - cur_xlim[0])
+    rely = (cur_ylim[1] - ydata) / (cur_ylim[1] - cur_ylim[0])
 
-    newWidth = (curXLim[1] - curXLim[0]) * scale
-    newHeight = (curYLim[1] - curYLim[0]) * scale
+    ax.set_xlim([xdata - new_w * (1 - relx), xdata + new_w * relx])
+    ax.set_ylim([ydata - new_h * (1 - rely), ydata + new_h * rely])
 
-    relX = (curXLim[1] - Xdata) / (curXLim[1] - curXLim[0])
-    relY = (curYLim[1] - Ydata) / (curYLim[1] - curYLim[0])
-
-    axes.set_xlim([Xdata - newWidth * (1 - relX), Xdata + newWidth * relX])
-    axes.set_ylim([Ydata - newHeight * (1 - relY), Ydata + newHeight * relY])
-    axes.figure.canvas.draw_idle()
+    ax.set_aspect("equal", adjustable="datalim")
+    ax.figure.canvas.draw_idle()
 
 
 def saveGraph(f):
