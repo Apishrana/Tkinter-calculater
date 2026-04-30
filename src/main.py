@@ -7,6 +7,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
+import matplotlib
+
+matplotlib.use("TkAgg")
 
 history = []
 MATH_FUNCS = {
@@ -221,7 +224,7 @@ def changeMode(calc_type):
         ).grid(row=2, column=2, columnspan=2, pady=5)
     else:
         createButtons()
-        root.iconphoto(False, tk.PhotoImage(file=icon_path))
+        # root.iconphoto(False, tk.PhotoImage(file=icon_path))
 
 
 def clear():
@@ -276,8 +279,8 @@ def click(val):
 
 root = tk.Tk()
 root.title("Calculator")
-icon_path = os.path.join(os.path.dirname(__file__), "calculator.png")
-root.iconphoto(False, tk.PhotoImage(file=icon_path))
+# icon_path = os.path.join(os.path.dirname(__file__), "calculator.png")
+# root.iconphoto(False, tk.PhotoImage(file=icon_path))
 root.resizable(width=False, height=False)
 
 
