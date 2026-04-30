@@ -49,6 +49,7 @@ def plotGraph():
     global currentFig
 
     plt.close("all")
+    changeMode("Graph")
 
     exp = entry.get()
     exp = exp.replace("^", "**")
@@ -92,7 +93,7 @@ def plotGraph():
         else:
             ttl += f" , y = {i}"
 
-    axes.set_title(ttl)
+    axes.set_title(ttl, color="white", fontsize=12, pad=10)
     axes.grid(True, which="both", linestyle="--", linewidth=0.5, alpha=0.6)
     axes.spines["left"].set_position("zero")
     axes.spines["bottom"].set_position("zero")
@@ -164,6 +165,8 @@ def onScroll(event):
 
 
 def saveGraph(f):
+    if not f:
+        return
     defaultDir = os.path.join(os.path.expanduser("~"), "Downloads")
     path = filedialog.asksaveasfilename(
         initialdir=defaultDir,
@@ -452,6 +455,17 @@ fileMenu.add_command(label="Save History", command=writeHistory)
 fileMenu.add_command(label="Save Graph", command=lambda: saveGraph(currentFig))
 fileMenu.add_separator()
 fileMenu.add_command(label="Exit", command=root.destroy)
+
+graphMenu = tk.Menu(menu)
+menu.add_cascade(label="Graph", menu=graphMenu)
+graphMenu.add_command(label="Plot Graph", command=plotGraph)
+graphMenu.add_command(label="Reset View", command=plotGraph)
+
+
+modeMenu = tk.Menu(menu)
+menu.add_cascade(label="Mode", menu=modeMenu)
+modeMenu.add_command(label="Calculator", command=lambda: changeMode("Calc"))
+modeMenu.add_command(label="Graph", command=lambda: changeMode("Graph"))
 
 helpMenu = tk.Menu(menu)
 menu.add_cascade(label="Help", menu=helpMenu)
