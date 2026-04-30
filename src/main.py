@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 
-
 history = []
 MATH_FUNCS = {
     "sin": np.sin,
@@ -110,6 +109,12 @@ def plotGraph():
     fig.canvas.mpl_connect("scroll_event", onScroll)
 
     currentFig = fig
+
+    axes.set_facecolor("#1e1e1e")
+    fig.patch.set_facecolor("#1e1e1e")
+    axes.tick_params(colors="white")
+    axes.spines["left"].set_color("white")
+    axes.spines["bottom"].set_color("white")
 
     for w in root.grid_slaves():
         if int(w.grid_info()["row"]) >= 3:
@@ -286,6 +291,9 @@ entry.bind(
 )
 
 
+entry.configure(bg="#2d2d2d", fg="white", insertbackground="white")
+
+
 buttons = [
     {
         "row": 2,
@@ -454,5 +462,7 @@ helpMenu.add_command(
     ),
 )
 
+
+root.configure(bg="#1e1e1e")
 
 root.mainloop()
