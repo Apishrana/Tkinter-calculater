@@ -96,3 +96,5 @@ The generated app files will be placed in PyInstaller's output folders, usually 
 └── src
     └── main.py
 ```
+
+-by apish d rana
